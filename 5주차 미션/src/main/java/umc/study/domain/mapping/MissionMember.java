@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
+@ToString(callSuper = true)
 public class MissionMember extends BaseEntity {
     @Id
     @GeneratedValue

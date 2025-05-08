@@ -8,6 +8,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
+@ToString(callSuper = true)
 public class Mission extends BaseEntity {
     @Id
     @GeneratedValue

@@ -10,6 +10,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
+@ToString(callSuper = true)
 public class Store extends BaseEntity {
     @Id
     @GeneratedValue
@@ -28,9 +29,11 @@ public class Store extends BaseEntity {
     @Column(nullable = false, length = 128)
     private String detailAddress;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StoreOperation> operations;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 }

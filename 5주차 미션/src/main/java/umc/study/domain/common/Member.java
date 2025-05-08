@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
+@ToString(callSuper = true)
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue
@@ -46,9 +47,11 @@ public class Member extends BaseEntity {
     @Column(nullable = false, unique = true, length = 12)
     private String phoneNumber;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ident> idents;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberFood> foods;
 }
