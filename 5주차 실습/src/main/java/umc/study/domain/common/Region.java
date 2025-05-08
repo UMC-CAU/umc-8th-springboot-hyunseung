@@ -8,6 +8,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
+@ToString
 public class Region extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
