@@ -3,6 +3,8 @@ package umc.study.domain.common;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import umc.study.domain.enums.Gender;
 import umc.study.domain.enums.MemberStatus;
 import umc.study.domain.enums.SocialType;
@@ -15,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@DynamicUpdate
+@DynamicInsert
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -69,4 +73,15 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberMission> memberMissionList = new ArrayList<>();
+
+//    public void setMemberPreferList(List<FoodCategory> foodCategoryList) {
+//        this.memberPreferList.forEach((memberPrefer) -> memberPrefer.setMember(null));
+//        this.memberPreferList = foodCategoryList.stream()
+//                .map(foodCategory ->
+//                        MemberPrefer.builder()
+//                                .member(this)
+//                                .foodCategory(foodCategory)
+//                                .build()
+//                ).collect(Collectors.toList());
+//    }
 }

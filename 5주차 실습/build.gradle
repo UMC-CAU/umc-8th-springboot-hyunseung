@@ -40,6 +40,10 @@ dependencies {
     annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+
+// 만약 spring boot 버전이 3.4.0 이상이라면 swagger 버전을 2.7.0을 써주세요
 }
 
 tasks.named('test') {
