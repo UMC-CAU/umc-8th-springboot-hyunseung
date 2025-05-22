@@ -29,4 +29,18 @@ public class MemberMission extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 15)
     private MissionStatus status;
+
+    public void setMember(Member member) {
+        if (this.member != null)
+            this.member.getMemberMissionList().remove(this);
+        this.member = member;
+        member.getMemberMissionList().add(this);
+    }
+
+    public void setMission(Mission mission) {
+        if (this.mission != null)
+            this.mission.getMemberMissionList().remove(this);
+        this.mission = mission;
+        mission.getMemberMissionList().add(this);
+    }
 }

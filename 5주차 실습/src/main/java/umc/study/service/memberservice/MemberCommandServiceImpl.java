@@ -44,4 +44,10 @@ public class MemberCommandServiceImpl implements MemberCommandService{
     public boolean isFoodCategoryExist(List<Long> values) {
         return values.size() == foodCategoryRepository.findAllById(values).size();
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean isMemberExist(Long id) {
+        return memberRepository.existsById(id);
+    }
 }

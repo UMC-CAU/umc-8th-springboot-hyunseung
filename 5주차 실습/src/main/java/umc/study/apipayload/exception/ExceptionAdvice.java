@@ -1,5 +1,6 @@
 package umc.study.apipayload.exception;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -8,8 +9,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -19,6 +22,7 @@ import umc.study.apipayload.ApiResponse;
 import umc.study.apipayload.code.ErrorReasonDTO;
 import umc.study.apipayload.code.status.ErrorStatus;
 
+import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -27,6 +31,22 @@ import java.util.Optional;
 @RestControllerAdvice(annotations = {RestController.class})
 public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
+//    @ExceptionHandler(HttpMessageNotReadableException.class)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public ApiResponse<String> handleInvalidFormat(HttpMessageNotReadableException ex) {
+//        // LocalDate 파싱 오류인지 확인
+//        Throwable cause = ex.getCause();
+//        if (cause instanceof InvalidFormatException ife)
+//            if (ife.getTargetType() == LocalDate.class)
+//                return ApiResponse.onFailure(ErrorStatus._BAD_REQUEST.getCode(),
+//                        ErrorStatus._BAD_REQUEST.getMessage(),
+//                        "날짜 형식이 올바르지 않습니다. 형식은 yyyy-MM-dd 이어야 합니다.");
+//
+//        // 기타 JSON 파싱 오류는 일반적인 메시지로 처리
+//        return ApiResponse.onFailure(ErrorStatus._BAD_REQUEST.getCode(),
+//                ErrorStatus._BAD_REQUEST.getMessage(),
+//                "요청 본문의 형식이 잘못되었습니다.");
+//    }
 
     @ExceptionHandler
     public ResponseEntity<Object> validation(ConstraintViolationException e, WebRequest request) {
@@ -58,7 +78,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
                 });
 
         return handleExceptionInternalArgs(e, HttpHeaders.EMPTY,
-                ErrorStatus.valueOf("_BAD_REQUEST"), request, errors);
+                ErrorStatus._BAD_REQUEST, request, errors);
     }
 
     @ExceptionHandler

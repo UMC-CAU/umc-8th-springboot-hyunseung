@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface MemberCommandService {
     Member joinMember(MemberRequestDTO.JoinDto request);
-
     boolean isFoodCategoryExist(List<Long> values);
+    boolean isMemberExist(Long id);
 }

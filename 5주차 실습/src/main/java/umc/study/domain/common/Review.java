@@ -2,8 +2,12 @@ package umc.study.domain.common;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
+@DynamicUpdate
+@DynamicInsert
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,4 +30,11 @@ public class Review extends BaseEntity {
 
     @Column(nullable = false)
     private float score;
+
+    public void setMember(Member member) {
+        if (this.member != null)
+            this.member.getReviewList().remove(this);
+        this.member = member;
+        member.getReviewList().add(this);
+    }
 }
