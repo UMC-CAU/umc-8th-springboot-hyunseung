@@ -26,7 +26,7 @@ public class MemberPrefer extends BaseEntity {
     private FoodCategory foodCategory;
 
     public void setMember(Member member){
-        if(this.member != null)
+        if (this.member != null)
             this.member.getMemberPreferList().remove(this);
         this.member = member;
         member.getMemberPreferList().add(this);
