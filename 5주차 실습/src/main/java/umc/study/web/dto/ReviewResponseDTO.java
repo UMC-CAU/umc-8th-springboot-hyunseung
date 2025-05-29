@@ -17,6 +17,7 @@ public class ReviewResponseDTO {
         Long commentId;
 //        LocalDateTime createdAt;
     }
+
     @Builder
     @Getter
     @NoArgsConstructor
@@ -36,6 +37,30 @@ public class ReviewResponseDTO {
     @AllArgsConstructor
     public static class ReviewPreViewDTO {
         String ownerNickname;
+        Float score;
+        String body;
+        LocalDate createdAt;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReviewMemberListDTO {
+        List<ReviewMemberDTO> reviewList;
+        Integer listSize;
+        Integer totalPage;
+        Long totalElements;
+        Boolean isFirst;
+        Boolean isLast;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReviewMemberDTO {
+        String storeName;
         Float score;
         String body;
         LocalDate createdAt;

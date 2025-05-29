@@ -1,11 +1,15 @@
 package umc.study.service.missionservice;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.study.apipayload.code.status.ErrorStatus;
 import umc.study.apipayload.exception.GeneralException;
+import umc.study.domain.common.Member;
 import umc.study.domain.common.Mission;
+import umc.study.domain.common.Store;
 import umc.study.domain.enums.MissionStatus;
 import umc.study.domain.mapping.MemberMission;
 import umc.study.repository.MemberMissionRepository;
@@ -51,5 +55,20 @@ public class MissionCommandServiceImpl implements MissionCommandService {
     @Override
     public boolean isMissionExist(Long id) {
         return missionRepository.existsById(id);
+    }
+
+    @Override
+    public Page<Mission> getMissionByStore(Long storeId, int page) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.STORE_NOT_FOUND));
+        return missionRepository.findAllByStore(store, PageRequest.of(page, 10));
+    }
+
+    @Override
+    public Page<MemberMission> getMissionByMemberChallenging(Long memberId, int page) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+        return memberMissionRepository.findAllByMemberAndStatus(member, MissionStatus.CHALLENGING,
+                PageRequest.of(page, 10));
     }
 }

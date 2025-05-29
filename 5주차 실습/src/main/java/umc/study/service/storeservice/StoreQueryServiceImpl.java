@@ -5,8 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.study.apipayload.code.status.ErrorStatus;
+import umc.study.apipayload.exception.GeneralException;
+import umc.study.domain.common.Member;
 import umc.study.domain.common.Review;
 import umc.study.domain.common.Store;
+import umc.study.repository.MemberRepository;
 import umc.study.repository.ReviewRepository;
 import umc.study.repository.StoreRepository;
 
@@ -20,6 +24,7 @@ public class StoreQueryServiceImpl implements StoreQueryService{
 
     private final StoreRepository storeRepository;
     private final ReviewRepository reviewRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public Optional<Store> findStore(Long id) {
@@ -39,9 +44,16 @@ public class StoreQueryServiceImpl implements StoreQueryService{
     }
 
     @Override
-    public Page<Review> getReviewList(Long StoreId, Integer page) {
-        Store store = storeRepository.findById(StoreId).get();
-        Page<Review> StorePage = reviewRepository.findAllByStore(store, PageRequest.of(page, 10));
-        return StorePage;
+    public Page<Review> getReviewList(Long storeId, Integer page) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.STORE_NOT_FOUND));
+        return reviewRepository.findAllByStore(store, PageRequest.of(page, 10));
+    }
+
+    @Override
+    public Page<Review> getReviewListByMember(Long memberId, int page) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+        return reviewRepository.findAllByMember(member, PageRequest.of(page, 10));
     }
 }
