@@ -8,6 +8,8 @@ import umc.study.web.dto.MissionResponseDTO;
 import umc.study.web.dto.ReviewResponseDTO;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class MissionConverter {
     public static MissionResponseDTO.AssignResultDTO toAssignResultDTO(MemberMission mission) {
@@ -33,7 +35,8 @@ public class MissionConverter {
                         .missionSpec(m.getMissionSpec())
                         .createdAt(m.getCreatedAt())
                         .updatedAt(m.getUpdatedAt())
-                        .build()).toList();
+                        .build())
+                .collect(Collectors.toList());
         return MissionResponseDTO.MissionStoreListDTO.builder()
                 .missionList(missionStoreDTOList)
                 .last(missionList.isLast())

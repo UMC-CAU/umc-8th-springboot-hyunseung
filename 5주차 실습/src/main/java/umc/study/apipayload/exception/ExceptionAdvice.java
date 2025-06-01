@@ -5,10 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import umc.study.apipayload.ApiResponse;
 import umc.study.apipayload.code.ErrorReasonDTO;
@@ -31,21 +29,46 @@ import java.util.Optional;
 @RestControllerAdvice(annotations = {RestController.class})
 public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
-//    @ExceptionHandler(HttpMessageNotReadableException.class)
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ApiResponse<String> handleInvalidFormat(HttpMessageNotReadableException ex) {
-//        // LocalDate 파싱 오류인지 확인
-//        Throwable cause = ex.getCause();
-//        if (cause instanceof InvalidFormatException ife)
-//            if (ife.getTargetType() == LocalDate.class)
-//                return ApiResponse.onFailure(ErrorStatus._BAD_REQUEST.getCode(),
-//                        ErrorStatus._BAD_REQUEST.getMessage(),
-//                        "날짜 형식이 올바르지 않습니다. 형식은 yyyy-MM-dd 이어야 합니다.");
+    @Override
+    public ResponseEntity<Object> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        Object body = null;
+        // LocalDate 파싱 오류인지 확인
+        Throwable cause = ex.getCause();
+        if (cause instanceof InvalidFormatException ife)
+            if (ife.getTargetType() == LocalDate.class)
+                body = ApiResponse.onFailure(ErrorStatus._BAD_REQUEST.getCode(),
+                        ErrorStatus._BAD_REQUEST.getMessage(),
+                        "날짜 형식이 올바르지 않습니다. 형식은 yyyy-MM-dd 이어야 합니다.");
+
+        // 기타 JSON 파싱 오류는 일반적인 메시지로 처리
+        if (body == null)
+            body = ApiResponse.onFailure(ErrorStatus._BAD_REQUEST.getCode(),
+                    ErrorStatus._BAD_REQUEST.getMessage(),
+                    "요청 본문의 형식이 잘못되었습니다.");
+
+        return handleExceptionInternal(ex, body, headers, status, request);
+    }
+
+    @ExceptionHandler(InvalidPageException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<String> handleInvalidPageException(InvalidPageException e) {
+        return ApiResponse.onFailure(ErrorStatus.INCORRECT_PAGE.getCode(),
+                "잘못된 요청입니다.", ErrorStatus.INCORRECT_PAGE.getMessage());
+    }
+
+//    @Override
+//    public ResponseEntity<Object> handleHandlerMethodValidationException(
+//            HandlerMethodValidationException e, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+//        e.printStackTrace();
 //
-//        // 기타 JSON 파싱 오류는 일반적인 메시지로 처리
-//        return ApiResponse.onFailure(ErrorStatus._BAD_REQUEST.getCode(),
-//                ErrorStatus._BAD_REQUEST.getMessage(),
-//                "요청 본문의 형식이 잘못되었습니다.");
+//        return super.handleExceptionInternal(
+//                e,
+//                ApiResponse.onFailure(ErrorStatus._BAD_REQUEST.getCode(), "잘못된 요청입니다.","reason.getMessage()"),
+//                headers,
+//                status,
+//                request
+//        );
 //    }
 
     @ExceptionHandler
@@ -64,6 +87,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
                                                                HttpHeaders headers,
                                                                HttpStatusCode status,
                                                                WebRequest request) {
+
 
         Map<String, String> errors = new LinkedHashMap<>();
 

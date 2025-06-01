@@ -18,6 +18,7 @@ import umc.study.domain.common.Mission;
 import umc.study.service.missionservice.MissionCommandService;
 import umc.study.validation.annotation.ExistMember;
 import umc.study.validation.annotation.ExistStore;
+import umc.study.validation.annotation.ValidPage;
 import umc.study.web.dto.MissionRequestDTO;
 import umc.study.web.dto.MissionResponseDTO;
 import umc.study.web.dto.ReviewResponseDTO;
@@ -62,9 +63,9 @@ public class MissionRestController {
     })
     public ApiResponse<MissionResponseDTO.MissionStoreListDTO> getMissionListByStore(
             @NotNull @ExistStore @PathVariable(name = "storeId") Long storeId,
-            @NotNull @Positive @RequestParam(name = "page") Integer page) {
+            @NotNull @ValidPage Integer page) {
         return ApiResponse.onSuccess(MissionConverter.toMissionStoreListDTO(
-                missionCommandService.getMissionByStore(storeId, page - 1)));
+                missionCommandService.getMissionByStore(storeId, page)));
     }
 
     @GetMapping("/member/challenging")
@@ -85,11 +86,11 @@ public class MissionRestController {
                     content = @Content(schema = @Schema(implementation = ApiResponse.class))),
     })
     public ApiResponse<MissionResponseDTO.MissionMemberListDTO> getMissionListChallengingByMember(
-            @NotNull @Positive @RequestParam(name = "page") Integer page,
+            @NotNull @ValidPage Integer page,
             @NotNull @ExistMember @RequestParam(name = "memberId") Long memberId) {
         //member는 Auth로 받아와야 하는데...
         return ApiResponse.onSuccess(MissionConverter.toMissionMemberListDTO(
-                missionCommandService.getMissionByMemberChallenging(memberId, page - 1)
+                missionCommandService.getMissionByMemberChallenging(memberId, page)
         ));
     }
 }

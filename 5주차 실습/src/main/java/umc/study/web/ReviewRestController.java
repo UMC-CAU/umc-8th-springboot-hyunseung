@@ -17,6 +17,7 @@ import umc.study.service.reviewservice.ReviewCommandService;
 import umc.study.service.storeservice.StoreQueryService;
 import umc.study.validation.annotation.ExistMember;
 import umc.study.validation.annotation.ExistStore;
+import umc.study.validation.annotation.ValidPage;
 import umc.study.web.dto.ReviewRequestDTO;
 import umc.study.web.dto.ReviewResponseDTO;
 
@@ -55,7 +56,7 @@ public class ReviewRestController {
     })
     public ApiResponse<ReviewResponseDTO.ReviewPreViewListDTO> getReviewList(
             @ExistStore @PathVariable(name = "storeId") Long storeId,
-            @RequestParam(name = "page") Integer page) {
+            @RequestParam(name = "page") Integer page) { //미션이 아닌 실습 부분임
         return ApiResponse.onSuccess(ReviewConverter.reviewPreViewListDTO
                 (storeQueryService.getReviewList(storeId, page)));
     }
@@ -82,9 +83,9 @@ public class ReviewRestController {
     })
     public ApiResponse<ReviewResponseDTO.ReviewMemberListDTO> getMemberReviewList(
             @NotNull @ExistMember @PathVariable(name = "memberId") Long memberId,
-            @NotNull @Positive @RequestParam(name = "page") Integer page) {
+            @NotNull @ValidPage Integer page) { // @RequestParam을 넣으면 작동 안함
         return ApiResponse.onSuccess(ReviewConverter.toReviewMemberListDTO(
-                storeQueryService.getReviewListByMember(memberId, page - 1)
+                storeQueryService.getReviewListByMember(memberId, page)
         ));
     }
 }
