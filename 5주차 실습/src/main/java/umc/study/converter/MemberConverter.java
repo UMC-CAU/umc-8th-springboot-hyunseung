@@ -38,4 +38,19 @@ public class MemberConverter {
                 .memberPreferList(new ArrayList<>())
                 .build();
     }
+
+    public static MemberResponseDTO.LoginResultDTO toLoginResultDTO(long id, String accessToken) {
+        return MemberResponseDTO.LoginResultDTO.builder()
+                .memberId(id)
+                .accessToken(accessToken)
+                .build();
+    }
+
+    public static MemberResponseDTO.MemberInfoDTO toMemberInfoDTO(Member member) {
+        return MemberResponseDTO.MemberInfoDTO.builder()
+                .email(member.getEmail())
+                .name(member.getName())
+                .gender(member.getGender().toString())
+                .build();
+    }
 }
