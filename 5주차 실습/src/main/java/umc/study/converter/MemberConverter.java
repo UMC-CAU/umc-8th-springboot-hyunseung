@@ -31,8 +31,10 @@ public class MemberConverter {
                 .specAddress(request.getSpecAddress())
                 .gender(gender)
                 .email(request.getEmail())
+                .password(request.getPassword())   // 추가된 코드
                 .age(request.getAge())
                 .name(request.getName())
+                .role(request.getRole())   // 추가된 코드
                 .memberPreferList(new ArrayList<>())
                 .build();
     }

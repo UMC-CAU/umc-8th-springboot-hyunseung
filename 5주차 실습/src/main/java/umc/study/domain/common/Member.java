@@ -7,6 +7,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import umc.study.domain.enums.Gender;
 import umc.study.domain.enums.MemberStatus;
+import umc.study.domain.enums.Role;
 import umc.study.domain.enums.SocialType;
 import umc.study.domain.mapping.MemberAgree;
 import umc.study.domain.mapping.MemberMission;
@@ -58,6 +59,13 @@ public class Member extends BaseEntity {
     @Column(nullable = false, unique = true, length = 50)
     private String email;
 
+    @Column(nullable = false, length = 60)
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault("'USER'")
+    private Role role;
+
     @Column(nullable = false)
     @ColumnDefault("0")
     private int point;
@@ -73,6 +81,10 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberMission> memberMissionList = new ArrayList<>();
+
+    public void encodePassword(String password) {
+        this.password = password;
+    }
 
 //    public void setMemberPreferList(List<FoodCategory> foodCategoryList) {
 //        this.memberPreferList.forEach((memberPrefer) -> memberPrefer.setMember(null));
